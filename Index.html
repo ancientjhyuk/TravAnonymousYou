@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travanonymous Inc.</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <!-- Logo Image -->
+        <img src="logo.png" alt="Travanonymous Inc. Logo" class="logo">
+        <h1>Travanonymous Inc.</h1>
+        <p>Your travel quote assistant – Flights, Hotels, and Car Rentals!</p>
+    </header>
+
+    <main>
+        <div class="form-container">
+            <form id="quote-form">
+                <fieldset>
+                    <legend>Request a Travel Quote</legend>
+
+                    <label for="origin">From (City or Airport):</label>
+                    <input type="text" id="origin" name="origin" required>
+
+                    <label for="destination">To (City or Airport):</label>
+                    <input type="text" id="destination" name="destination" required>
+
+                    <label for="hotel-amenities">Hotel Amenities (e.g., WiFi, Pool, Gym):</label>
+                    <input type="text" id="hotel-amenities" name="hotel-amenities" required>
+
+                    <label for="car-type">Car Type (e.g., Sedan, SUV):</label>
+                    <input type="text" id="car-type" name="car-type" required>
+
+                    <label for="user-email">Your Email:</label>
+                    <input type="email" id="user-email" name="user-email" required>
+
+                    <button type="submit">Request Quote</button>
+                </fieldset>
+            </form>
+        </div>
+
+        <div id="quote-summary">
+            <h2>Quote Summary</h2>
+            <p><strong>Flight Details:</strong> From <span id="quote-origin"></span> to <span id="quote-destination"></span></p>
+            <p><strong>Hotel Amenities:</strong> <span id="quote-hotel-amenities"></span></p>
+            <p><strong>Car Type:</strong> <span id="quote-car-type"></span></p>
+            <p><strong>Your Email:</strong> <span id="quote-email"></span></p>
+            <button id="save-to-local">Save to Local Storage</button>
+            <button id="send-to-email">Send via Email</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>Travanonymous Inc. © 2024</p>
+    </footer>
+
+    <script type="text/javascript">
+        emailjs.init("oB8SqijMxs9Ix_x1b");
+
+        document.getElementById('quote-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+            const hotelAmenities = document.getElementById('hotel-amenities').value;
+            const carType = document.getElementById('car-type').value;
+            const userEmail = document.getElementById('user-email').value;
+
+            document.getElementById('quote-origin').innerText = origin;
+            document.getElementById('quote-destination').innerText = destination;
+            document.getElementById('quote-hotel-amenities').innerText = hotelAmenities;
+            document.getElementById('quote-car-type').innerText = carType;
+            document.getElementById('quote-email').innerText = userEmail;
+
+            const quoteSummary = {
+                origin,
+                destination,
+                hotelAmenities,
+                carType,
+                userEmail
+            };
+
+            // Save to localStorage
+            document.getElementById('save-to-local').onclick = function () {
+                localStorage.setItem('quoteSummary', JSON.stringify(quoteSummary));
+                alert('Quote saved to local storage!');
+            };
+
+            // Send the quote summary via Email
+            document.getElementById('send-to-email').onclick = function () {
+                const emailTemplateParams = {
+                    origin,
+                    destination,
+                    hotel_amenities: hotelAmenities,
+                    car_type: carType,
+                    user_email: userEmail
+                };
+
+                emailjs.send("service_jloeltm", "template_c6qjadb", emailTemplateParams)
+                    .then(function (response) {
+                        alert("Quote sent successfully via email!");
+                    }, function (error) {
+                        alert("Failed to send the quote. Please try again.");
+                    });
+            };
+        });
+    </script>
+
+</body>
+
+</html>
